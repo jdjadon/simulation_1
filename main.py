@@ -1,20 +1,29 @@
 import simpy
-from . import *
-# Create the SimPy environment
+import pandas as pd
+import others.userinput
+from others import resources
+from others.global_variable import *
+from source import source
+import random
+
+
 env = simpy.Environment()
 
-# Create machine instances with their parameters
-machines = {}
-for machine_name, params in userinput.machine_params.items():
-    machines[machine_name] = env.process(machine(env, machine_name, params))
-
-
-# Generate job arrivals (for demonstration purposes)
+# Create a resource for each machine
+machines = resources.add_machine(env)
+source = source.source(env)
+buffers = resources.add_buffer(env)
 
 
 
-# Start the job generation process
-env.process(job_generator(env, machines))
+job_record_df = pd.DataFrame(job_record)
+
+# Print the job record as a DataFrame
+print("Job Generation Record:")
+print(job_record_df)
+
+
+
 
 # Run the simulation
 env.run(until=50)  # Adjust the simulation time as needed
