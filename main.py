@@ -11,8 +11,9 @@ env = simpy.Environment()
 
 # Create a resource for each machine
 machines = resources.add_machine(env)
-source = source.source(env)
 buffers = resources.add_buffer(env)
+source = source.source(env)
+
 
 
 
@@ -26,4 +27,4 @@ print(job_record_df)
 
 
 # Run the simulation
-env.run(until=50)  # Adjust the simulation time as needed
+env.run(until=500)  # Adjust the simulation time as needed

@@ -1,29 +1,35 @@
-import simpy
-import random
+import datetime
 import pandas as pd
 from others.global_variable import *
 machines = machine_params
-
+job_counter = 0
 # Define the job generator function for a specific job type
-def job_generator(env, job_type, total_quantity, frequency, lot_size):
+def job_generator(env, job_type, total_quantity, frequency, lot_size, dispatch_to):
+    global job_counter
     while total_quantity > 0:
         quantity = min(total_quantity, lot_size)
-        machine_name = dispatch_rules.get(job_type, random.choice(list(machines.keys())))
-        machine = machines[machine_name]
+        for i in range(quantity):
+            # Create a unique ID for each job with job type, generation date, and a unique number
+            timestamp = datetime.datetime.now().strftime("%H%M%S")
+            job_id = f"{job_type}_{timestamp}_{job_counter}"
+            job_counter += 1
+            job = {
+                "Id" : job_id,
+                "type": job_type,
+                "time_generated": env.now,
+                "operation_done" : 0,
+            }
 
-        job = {
-            "type": job_type,
-            "quantity": quantity,
-            "exit": machine_name,
-            "time_generated": env.now
-        }
+            # Record the generated job
+            job_record.append(job)
+            if dispatch_to in machines:
+                machine = machines[dispatch_to]
+                machine.queue.append(job)
+            else:
+                buffer = buffers[dispatch_to]
+                yield buffer.put(job)
 
-        # Record the generated job
-        job_record.append(job)
-        # machine.queue.append(job)
-
-        print(f"{env.now}: Generated {quantity} {job_type} jobs for {machine_name}")
-
+        print(f"{env.now}: Generated {quantity} {job_type} jobs and sendto {dispatch_to}")
         total_quantity -= quantity
 
         yield env.timeout(frequency)
@@ -38,4 +44,5 @@ def source(env):
         total_quantity = row["Total Quantity"]
         frequency = row["Frequency"]
         lot_size = row["Lot Size"]
-        env.process(job_generator(env, job_type, total_quantity, frequency, lot_size))
+        dispatch_to = row["Dispatch to"]
+        env.process(job_generator(env, job_type, total_quantity, frequency, lot_size, dispatch_to))

@@ -3,6 +3,8 @@ from others import global_variable
 # Define a data structure to store machine parameters
 global_variable.machine_params = {
     "Machine1": {
+        "Entry" : "Buffer1",
+        "Exit"  : "Buffer3",
         "failure_modes": [
             {    "name" : "M1FM1",
                 "failure_dist": "weibull",
@@ -20,6 +22,8 @@ global_variable.machine_params = {
         ],
     },
     "Machine2": {
+        "Entry" : "Buffer2",
+        "Exit"  : "Buffer3",
         "failure_modes": [
             {   "name" : "M2FM1",
                 "failure_dist": "weibull",
@@ -42,30 +46,31 @@ global_variable.machine_params = {
 
 # Define dispatching rules (user-defined)
 global_variable.dispatch_rules = {
-    "JobA": "Machine1",
-    "JobB": "Machine1",}
+    "Job1": "Machine1",
+    "Job2": "Machine1",}
     # Add more dispatching rules for other job types
 
 # Create a dataframe for user input
 global_variable.input_data = {
-    "Job Type": ["JobA", "JobB"],
+    "Job Type": ["Job1", "Job2"],
     "Total Quantity": [50, 30],
-    "Frequency": [3, 5],
+    "Frequency": [30, 50],
     "Lot Size": [5, 10],
+    "Dispatch to" : ["Buffer1", "Buffer2"]
 }
 
 # Define a data structure to store buffer parameters
 global_variable.buffer_params = {
     "Buffer1": {
-        "capacity": 10  # Example buffer capacity
+        "capacity": 1000  # Example buffer capacity
     },
     "Buffer2": {
-        "capacity": 5  # Example buffer capacity
+        "capacity": 500  # Example buffer capacity
     },
     # Add more buffers with their parameters as needed
 }
 
-job_info = {
+global_variable.job_info = {
     "Job1": {
         "operations": [
             {

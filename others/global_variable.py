@@ -8,3 +8,4 @@ input_data = {}
 job_record = []
 buffers = {}
 buffer_params = {}
+job_info = {}
