@@ -10,7 +10,7 @@ def job_generator(env, job_type, total_quantity, frequency, lot_size, dispatch_t
         quantity = min(total_quantity, lot_size)
         for i in range(quantity):
             # Create a unique ID for each job with job type, generation date, and a unique number
-            timestamp = datetime.datetime.now().strftime("%H%M%S")
+            timestamp = env.now
             job_id = f"{job_type}_{timestamp}_{job_counter}"
             job_counter += 1
             job = {

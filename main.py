@@ -6,11 +6,12 @@ from others.global_variable import *
 from source import source
 import random
 
-
+accuracy = 2
 env = simpy.Environment()
 
 # Create a resource for each machine
 machines = resources.add_machine(env)
+
 buffers = resources.add_buffer(env)
 source = source.source(env)
 
@@ -28,3 +29,4 @@ print(job_record_df)
 
 # Run the simulation
 env.run(until=500)  # Adjust the simulation time as needed
+print(machine_status)

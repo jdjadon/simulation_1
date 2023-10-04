@@ -9,8 +9,19 @@ def add_machine(env):
     for machine_name, params in machine_params.items():
         machines[machine_name] = env.process(
             machine.machine(env, machine_name, params, machine_resources[machine_name]))
+        machine_status.update({
+                            machine_name : {
+                            'idle': 0,
+                          'process': 0,
+                          'setup': 0,
+                          'fail': 0,
+                          'maintainence': 0}})
+        env.process(machine.machine_failure(env, machine_name))
+        env.process(machine.machine_status_f(env, machine_name))
     return machine_resources, machines
 
 def add_buffer(env):
     for buffer_name, params in buffer_params.items():
         buffers[buffer_name] = simpy.Store(env, params["capacity"])
+
+

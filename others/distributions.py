@@ -1,12 +1,19 @@
-import random
+import numpy as np
 
-# Define a function to generate random failure and repair times based on a given distribution
-def generate_time(distribution, params):
-    if distribution == "exponential":
-        return random.expovariate(params[0])
-    elif distribution == "normal":
-        return random.normalvariate(params[0], params[1])
-    elif distribution == "weibull":
-        return random.weibullvariate(params[1], params[0])
+def generate_random_variable(distribution, *params):
+    if distribution == 'normal':
+        mean, std_dev = params
+        return np.random.normal(mean, std_dev)
+    elif distribution == 'uniform':
+        low, high = params
+        return np.random.uniform(low, high)
+    elif distribution == 'exponential':
+        scale = params[0]
+        return np.random.exponential(scale)
+    elif distribution == 'weibull':
+        shape, scale = params
+        return np.random.weibull(shape) * scale
     else:
-        return 0  # No failure or repair if distribution not specified
+        raise ValueError("Unsupported distribution: " + distribution)
+
+
