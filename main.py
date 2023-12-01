@@ -6,7 +6,7 @@ from others.global_variable import *
 from source import source
 import random
 
-accuracy = 2
+accuracy = 0.1
 env = simpy.Environment()
 
 # Create a resource for each machine
@@ -28,5 +28,12 @@ print(job_record_df)
 
 
 # Run the simulation
-env.run(until=500)  # Adjust the simulation time as needed
+env.run(until=100)  # Adjust the simulation time as needed
 print(machine_status)
+# Convert the list into a DataFrame
+global failure_records
+failure_records_df = pd.DataFrame(failure_records)
+
+# Display the DataFrame
+print(failure_records_df)
+import DataVisualisation.visualisation

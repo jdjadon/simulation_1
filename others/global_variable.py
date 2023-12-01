@@ -1,4 +1,4 @@
-
+import pandas as pd
 # Machine
 machine_resources = {}
 machines = {}
@@ -11,3 +11,5 @@ buffers = {}
 buffer_params = {}
 job_info = {}
 accuracy = 1
+failure_records = []
+timeline_logs = {}
