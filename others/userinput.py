@@ -5,7 +5,7 @@ global_variable.machine_params = {
     "Machine1": {
         "status" : "idle",
         "Entry" : "Buffer1",
-        "Exit"  : "Buffer2",
+        "Exit"  : "Machine2",
         "current_job" : 'NULL',
         "Remaining_process_time" : 0,
         "failure_modes": [
@@ -25,13 +25,14 @@ global_variable.machine_params = {
                 "ttf": 0 ,
                 "ttr" : 0
             },
-
-            # Add more failure modes as needed
+           # Add more failure modes as needed
         ],
+        "sequence" : [ ("Job1", 10, 0)            # (jobname, lotsize, quantitymade)
+                        ,("Job2",  5 , 0)],
     },
     "Machine2": {
         "status" : "idle",
-        "Entry" : "Buffer2",
+        "Entry" : "Machine1",
         "Exit"  : "Buffer3",
         "current_job" : 'NULL',
         "Remaining_process_time" : 0,
@@ -54,7 +55,9 @@ global_variable.machine_params = {
             },
             # Add more failure modes as needed
         ],
+        "sequence" : {},
     },
+
     # Add more machines with their parameters as needed
 }
 
@@ -68,9 +71,9 @@ global_variable.dispatch_rules = {
 # Create a dataframe for user input
 global_variable.input_data = {
     "Job Type": ["Job1", "Job2"],
-    "Total Quantity": [5, 5],
-    "Frequency": [1, 1],
-    "Lot Size": [5, 5],
+    "Total Quantity": [50, 50],
+    "Frequency": [1,3],
+    "Lot Size": [10, 5],
     "Dispatch to" : ["Buffer1", "Buffer1"]
 }
 
@@ -98,13 +101,13 @@ global_variable.job_info = {
                 "operation_name": "Operation1",
                 "machines": ["Machine1"],
                 "setup_time": 1,
-                "process_time": 10,
+                "process_time": 1,
             },
             {
                 "operation_name": "Operation2",
                 "machines": ["Machine2", "Machine3"],
-                "setup_time": 30,
-                "process_time": 10,
+                "setup_time": 1,
+                "process_time": 1,
             },
             # Add more operations as needed
         ],
@@ -114,14 +117,14 @@ global_variable.job_info = {
             {
                 "operation_name": "Operation1",
                 "machines": ["Machine2", "Machine4"],
-                "setup_time": 3,
-                "process_time": 6,
+                "setup_time": 1,
+                "process_time": 1,
             },
             {
                 "operation_name": "Operation2",
                 "machines": ["Machine3", "Machine5"],
-                "setup_time": 30,
-                "process_time": 8,
+                "setup_time": 2,
+                "process_time": 3,
             },
             # Add more operations as needed
         ],

@@ -16,7 +16,8 @@ def add_machine(env):
                           'setup': 0,
                           'fail': 0,
                           'maintainence': 0,
-                            'blocked': 0}})
+                            'blocked': 0,
+                            "PostProcessing" : 0}})
         env.process(machine.machine_status_f(env, machine_name))
 
         for failure_mode in machine_params[machine_name]["failure_modes"]:

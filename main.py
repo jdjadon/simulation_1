@@ -4,6 +4,7 @@ import others.userinput
 from others import resources
 from others.global_variable import *
 from source import source
+from DataVisualisation import visualisation
 import random
 
 accuracy = 0.1
@@ -28,7 +29,7 @@ print(job_record_df)
 
 
 # Run the simulation
-env.run(until=100)  # Adjust the simulation time as needed
+env.run(until=30)  # Adjust the simulation time as needed
 print(machine_status)
 # Convert the list into a DataFrame
 global failure_records
@@ -36,4 +37,4 @@ failure_records_df = pd.DataFrame(failure_records)
 
 # Display the DataFrame
 print(failure_records_df)
-import DataVisualisation.visualisation
+visualisation.machine_timeline(timeline_logs)

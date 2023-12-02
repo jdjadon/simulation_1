@@ -7,20 +7,30 @@ from others.distributions import generate_random_variable
 # Define the machine process as a generator function
 def machine(env, name, params, machine_resource):
 
-      while True:
+    while True:
+        print(f"{env.now}: {name} is waiting for a job")
         # check where is the entry point of the machine whether it is machine or buffer and based on it take job from it
-        while machine_params[name]['current_job'] == "NULL":                                    #run until machine gets the job either by puss or pull mechanism
-            if params["Entry"] in machines:                                                     # if entry point is machine then chk that machine for input
-                if machine_params[params["Entry"]]['status'] == "PoseProcessing:":               # take only if previous machine has finished operation
+        while machine_params[name]['current_job'] == "NULL":                                    #run until machine gets the job either by push or pull mechanism
+            if params["Entry"] in machines:
+                # if entry point is machine then chk that machine for input
+                if machine_params[params["Entry"]]['status'] == "PostProcessing:":               # take only if previous machine has finished operation
                     entry_point = machines[params["Entry"]]
                     job_in = yield entry_point.get()
                     machine_params[name]['current_job'] = job_in
-            elif params["Entry"] in buffers:
-                entry_point = buffers[params["Entry"]]
-                job_in = yield entry_point.get()
-                machine_params[name]['current_job'] = job_in
+                    machine_params[params["Entry"]]['status'] = 'idle'
+                    machine_params[params["Entry"]]['current_job'] = 'NULL'
+                else:
+                    yield env.timeout(accuracy)
 
-        print("{}: {} is setting up {} taken from {}".format(env.now, name, job_in["Id"], entry_point))
+            elif params["Entry"] in buffers:
+                try:
+                    entry_point = buffers[params["Entry"]]
+                    job_in = yield entry_point.get()
+                    machine_params[name]['current_job'] = job_in
+                except:
+                    yield env.timeout(accuracy)
+        job_in = machine_params[name]['current_job']                                            # when pushed by other machine in this machine
+        print("{}: {} is setting up {}".format(env.now, name, job_in["Id"]))
         setup_time = job_info[job_in["type"]]["operations"][job_in["operation_done"]]["setup_time"]
         machine_params[name]['status'] = 'setup'
         yield env.timeout(setup_time)
@@ -45,17 +55,18 @@ def machine(env, name, params, machine_resource):
                 machine_params[name]['status'] = 'process'
         job_in["operation_done"] += 1
         print(machine_params[name]['current_job'])
+        machine_params[name]['status'] = 'PostProcessing'
         # if exit is defined in next machine
         while machine_params[name]['current_job'] != "NULL" :
             # it means there is job present at the machine
             exit_point = params["Exit"]
             if params["Exit"] in machines:                                                # next machine should be idle state to put a job into it
                 if machine_params[params["Exit"]]['status'] == 'idle':
-                    yield exit_point.get()                                                # pushed the job to next machine
+                    machine_params[params["Exit"]]['current_job'] = job_in
                     machine_params[name]['current_job'] = "NULL"                          # now there is no job on machine
                     machine_params[name]['status'] = 'idle'                               # machine status changed to idle
-                    print(f"{env.now}: {name} is waiting for a job")
-                    machine_params[params["Exit"]]['current_job'] = job_in                # next machine got the job
+
+                                    # next machine got the job
 
                 else:
                     machine_params[name]['status'] = 'blocked'                            # machine is blocked wait till machine exit machine status changes.
@@ -66,12 +77,11 @@ def machine(env, name, params, machine_resource):
                 yield buffers[exit_point].put(job_in)                                                  # job pushed to the buffer
                 machine_params[name]['current_job'] = "NULL"                              # there is no job on the machine
                 machine_params[name]['status'] = 'idle'
-                print(f"{env.now}: {name} is waiting for a job")
                 # machine_params[params["Exit"]]['current_job'] = job_in need to incease buffer count
 
             else:                                                                          # exit point is not defined by the user
                 yield env.timeout(accuracy)
-                print("yes")# wait until job is pulled by some other asset
+                # wait until job is pulled by some other asset
 
 
 
