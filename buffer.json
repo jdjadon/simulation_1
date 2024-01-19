@@ -1,0 +1,15 @@
+{
+        "buffer1": {
+            "capacity": 100,
+            "current_status": {"Job1":1, "Job2":0}
+        },
+        "buffer2": {
+            "capacity": 50,
+            "current_status": {"Job1":2, "Job2":0}
+        },
+        "buffer3": {
+            "capacity": 75,
+            "current_status": {"Job1":0, "Job2":0}
+        }
+
+}

@@ -1,0 +1,114 @@
+{
+    "Machine1" : {
+    "operating_conditions": {
+        "speed": 150,
+        "load": 0.75,
+        "operator": "XYZ",
+        "energy_consumption": 120
+    },
+     "job_information": {
+         "process_time_completed" : 0.5,
+         "status" : "process",
+        "current_job": "Job1",
+        "jobs_in_queue": ["JobB", "JobC"],
+        "job_sequence": ["JobB", "JobC"]
+    },
+    "processing time": {
+        "setup_time": {"JobA": {"JobB" :  10, "JobC" :  20},
+                        "JobB": {"JobA" :  100, "JobB" :  20},
+                        "JobC": {"JobA" :  10, "JobB" :  20}},
+        "process_time": {"JobA":10, "JobB" :  20, "JobC" :  20}
+    },
+
+    "preventive_maintenance_1_record": {
+        "last_maintenance": {
+            "type": "Preventive",
+            "date": "2024-01-15",
+            "details": "Replaced worn-out parts"
+        },
+        "planned_maintenance": {
+            "type": "Scheduled",
+            "date": "2024-06-01",
+            "details": "Inspect and lubricate moving parts"
+        }
+    },
+    "failure_modes": [
+        {
+            "name": "FM1",
+            "failure_distribution": "weibull",
+            "failure_parameters": [3, 3000],
+            "last_failure": {
+                "date": "2023-02-20",
+                "details": "Bearing failure"
+            },
+            "tslf": 100
+        },
+        {
+            "name": "FM2",
+            "failure_distribution": "exponential",
+            "failure_parameters": [5],
+            "last_failure": {
+                "date": "2023-01-10",
+                "details": "Motor failure"
+            },
+            "tslf": 100
+        }
+    ]
+},
+    "Machine2" : {
+    "operating_conditions": {
+        "speed": 150,
+        "load": 0.75,
+        "operator": "XYZ",
+        "energy_consumption": 120
+    },
+     "job_information": {
+         "process_time_completed" : 0.5,
+         "status" : "process",
+        "current_job": "Job1",
+        "jobs_in_queue": ["JobB", "JobC"],
+        "job_sequence": ["JobB", "JobC"]
+    },
+    "processing time": {
+        "setup_time": {"JobA": {"JobB" :  10, "JobC" :  20},
+                        "JobB": {"JobA" :  100, "JobB" :  20},
+                        "JobC": {"JobA" :  10, "JobB" :  20}},
+        "process_time": {"JobA":10, "JobB" :  20, "JobC" :  20}
+    },
+
+    "preventive_maintenance_1_record": {
+        "last_maintenance": {
+            "type": "Preventive",
+            "date": "2024-01-15",
+            "details": "Replaced worn-out parts"
+        },
+        "planned_maintenance": {
+            "type": "Scheduled",
+            "date": "2024-06-01",
+            "details": "Inspect and lubricate moving parts"
+        }
+    },
+    "failure_modes": [
+        {
+            "name": "FM1",
+            "failure_distribution": "weibull",
+            "failure_parameters": [3, 3000],
+            "last_failure": {
+                "date": "2023-02-20",
+                "details": "Bearing failure"
+            },
+            "tslf": 100
+        },
+        {
+            "name": "FM2",
+            "failure_distribution": "exponential",
+            "failure_parameters": [5],
+            "last_failure": {
+                "date": "2023-01-10",
+                "details": "Motor failure"
+            },
+            "tslf": 100
+        }
+    ]
+}
+}

@@ -29,33 +29,36 @@ def machine(env, name, params, machine_resource):
                     machine_params[name]['current_job'] = job_in
                 except:
                     yield env.timeout(accuracy)
+
         job_in = machine_params[name]['current_job']                                            # when pushed by other machine in this machine
-        print("{}: {} is setting up {}".format(env.now, name, job_in["Id"]))
-        setup_time = job_info[job_in["type"]]["operations"][job_in["operation_done"]]["setup_time"]
-        machine_params[name]['status'] = 'setup'
-        yield env.timeout(setup_time)
+        if machine_params[name]['status'] == "idle" :
+            print("{}: {} is setting up {}".format(env.now, name, job_in["Id"]))
+            setup_time = job_info[job_in["type"]]["operations"][job_in["operation_done"]]["setup_time"]
+            machine_params[name]['status'] = 'setup'
+            yield env.timeout(setup_time)
+            machine_params[name]['status'] = 'process'
 
-        machine_params[name]['status'] = 'process'
-        print("{}: {} is processing {}".format(env.now, name, job_in["Id"]))
-        process_time = job_info[job_in["type"]]["operations"][job_in["operation_done"]]["process_time"]
+        if machine_params[name]['status'] == "process" :
+            print("{}: {} is processing {}".format(env.now, name, job_in["Id"]))
+            process_time = job_info[job_in["type"]]["operations"][job_in["operation_done"]]["process_time"] - machine_params[name]['process_time_completed']
 
-        # interruption due to machine failure
-        while process_time:
-            try:
-                start = env.now
-                yield env.timeout(process_time)
-                process_time = 0
-            except simpy.Interrupt:
-                print("{} failed".format(name))
-                process_time -= env.now - start  # time left for processing the batch
-                machine_params[name]['status'] = 'fail'
-                global failure_records
-                yield env.timeout(round(failure_records[-1]["TimeToRepair"],1))
-                print("{} Repaired".format(name))
-                machine_params[name]['status'] = 'process'
-        job_in["operation_done"] += 1
-        print(machine_params[name]['current_job'])
-        machine_params[name]['status'] = 'PostProcessing'
+            # interruption due to machine failure
+            while process_time:
+                try:
+                    start = env.now
+                    yield env.timeout(process_time)
+                    process_time = 0
+                except simpy.Interrupt:
+                    print("{} failed".format(name))
+                    process_time -= env.now - start  # time left for processing the batch
+                    machine_params[name]['status'] = 'fail'
+                    global failure_records
+                    yield env.timeout(round(failure_records[-1]["TimeToRepair"],1))
+                    print("{} Repaired".format(name))
+                    machine_params[name]['status'] = 'process'
+            job_in["operation_done"] += 1
+            print(machine_params[name]['current_job'])
+            machine_params[name]['status'] = 'PostProcessing'
         # if exit is defined in next machine
         while machine_params[name]['current_job'] != "NULL" :
             # it means there is job present at the machine
